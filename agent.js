@@ -1,7 +1,8 @@
 const Path = require('path');
 const Fs = require('fs-extra');
-const {saveImage} = require('./image');
+const Image = require('./image');
 const Constant = require('./const');
+const ImageTask = require('./task');
 
 /**
  * ws实例，用来管理客户端行为
@@ -16,6 +17,7 @@ class Agent {
         this.dest = null;
         this.idx = 0;
         this.phone = '';//先不用，后续要加上去区分不同手机
+        this.imageTask = new ImageTask();
         this.init();
     }
 
@@ -53,31 +55,36 @@ class Agent {
      * @returns {Promise<void>}
      */
     async saveImage(message) {
-        await saveImage(message, this.width, this.height, Path.join(this.dest, `${++this.idx}.png`));
+        console.log('receive-');
+        this.imageTask.push(new Image(this.width, this.height, message, Path.join(this.dest, `${++this.idx}.png`)));
         this.sendMessage({
             type: Constant.SEND_MESSAGE_ENUM.IMAGE_SAVED,
             status: Constant.STATUS_CODE.SUCCESS
         });
+        console.log('send-');
     }
 
     async handleMessage(message) {
         let msg = JSON.parse(message);
+        console.log('type', msg.type);
         switch (msg.type) {
             //初始化
             case Constant.RECEIVE_MESSAGE_ENUM.LOADED:
-                this.width = msg.width;
-                this.height = msg.height;
+                this.width = parseInt(msg.width);
+                this.height = parseInt(msg.height);
                 this.platform = msg.platform;
+                this.phone = msg.phone || '';
                 this.sendMessage({
                     type: Constant.RECEIVE_MESSAGE_ENUM.LOADED,
                     status: Constant.STATUS_CODE.SUCCESS,
                     frameRate: Constant.FRAME_RATE,
-                    total: Constant.FRAME_RATE,
+                    totalFrame: Constant.TOTAL_FRAME,
                 });
                 break;
             //切换场景
             case Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE:
-                this.dest = Path.join(Constant.IMAGE_SAVE_PATH, this.platform, this.phone, msg.scene);
+                let folder = Path.basename(msg.scene, Path.extname(msg.scene));
+                this.dest = Path.join(Constant.IMAGE_SAVE_PATH, this.platform + '', this.phone, folder);
                 Fs.ensureDirSync(this.dest);
                 this.idx = 0;
                 this.sendMessage({
@@ -87,7 +94,7 @@ class Agent {
                 });
                 break;
             default:
-                console.log('未知的命令');
+                console.log('未知的命令', msg.type);
                 break;
         }
     }
@@ -97,6 +104,7 @@ class Agent {
     }
 
     onError(event) {
+        dest
 
     }
 

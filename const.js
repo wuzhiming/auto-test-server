@@ -1,8 +1,8 @@
 module.exports = {
     //保存的基础路径
     IMAGE_SAVE_PATH: '/Users/wzm/company/auto-test/',
-    FRAME_RATE: 30,//客户端的帧率
-    TOTAL_FRAME: 200,
+    FRAME_RATE: 15,//客户端的帧率
+    TOTAL_FRAME: 150,
     //接收消息列表
     RECEIVE_MESSAGE_ENUM: {
         LOADED: 'loaded',//程序加载完成，这时候会带参数信息过来
