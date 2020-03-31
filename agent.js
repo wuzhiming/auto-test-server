@@ -104,12 +104,9 @@ class Agent {
     }
 
     onError(event) {
-        dest
-
     }
 
     onClosed(event) {
-
     }
 
     destroy() {
