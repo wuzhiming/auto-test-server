@@ -64,7 +64,6 @@ class Agent {
 
     async handleMessage(message) {
         let msg = JSON.parse(message);
-        console.log('type', msg.type);
         switch (msg.type) {
             //初始化
             case Constant.RECEIVE_MESSAGE_ENUM.LOADED:
@@ -84,11 +83,20 @@ class Agent {
                 let folder = Path.basename(msg.scene, Path.extname(msg.scene));
                 this.dest = Path.join(Constant.IMAGE_SAVE_PATH, this.platform + '', this.phone, folder);
                 Fs.ensureDirSync(this.dest);
+                Fs.emptyDirSync(this.dest);
+                console.log(`change scene`, folder);
                 this.idx = 0;
                 this.sendMessage({
                     type: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,
                     status: Constant.STATUS_CODE.SUCCESS,
                     scene: msg.scene
+                });
+                break;
+            case Constant.RECEIVE_MESSAGE_ENUM.END:
+                cc.log('测试完毕');
+                this.sendMessage({
+                    type: Constant.RECEIVE_MESSAGE_ENUM.END,
+                    status: Constant.STATUS_CODE.SUCCESS,
                 });
                 break;
             default:
