@@ -27,7 +27,9 @@ class ImageTask {
             array.push(image.save());
             this.currentTaskCount++;
         }
-        Promise.all(array).then(() => {
+        Promise.all(array).catch((err)=>{
+            console.error(err);
+        }).finally(() => {
             this.currentTaskCount -= array.length;
             if (this.last) {
                 this.run();

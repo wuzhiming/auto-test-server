@@ -12,10 +12,10 @@ class Image {
 
     save() {
         return new Promise((resolve, reject) => {
-            console.log('saving image ==>', this.dest);
             new jimp({width: this.width, height: this.height, data: this.data}, (err, image) => {
+                console.log('saving image ==>', this.dest);
                 if (err) {
-                    reject();
+                    reject(err);
                     return;
                 }
                 image.flip(false, true);

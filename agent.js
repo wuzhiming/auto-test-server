@@ -55,13 +55,11 @@ class Agent {
      * @returns {Promise<void>}
      */
     async saveImage(message) {
-        console.log('receive-');
         this.imageTask.push(new Image(this.width, this.height, message, Path.join(this.dest, `${++this.idx}.png`)));
         this.sendMessage({
             type: Constant.SEND_MESSAGE_ENUM.IMAGE_SAVED,
             status: Constant.STATUS_CODE.SUCCESS
         });
-        console.log('send-');
     }
 
     async handleMessage(message) {
