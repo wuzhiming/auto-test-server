@@ -3,14 +3,17 @@ const Fs = require('fs-extra');
 const Image = require('./image');
 const Constant = require('./const');
 const ImageTask = require('./task');
+const Host = require('./host');
+
+const EventEmitter = require('events');
 
 /**
  * ws实例，用来管理客户端行为
  */
-class Agent {
+class Agent extends EventEmitter {
     constructor(ws) {
+        super();
         this.connection = ws;
-
         this.platform = null;
         this.width = null;
         this.height = null;
@@ -71,17 +74,25 @@ class Agent {
                 this.height = parseInt(msg.height);
                 this.platform = msg.platform;
                 this.phone = msg.phone || '';
-                this.sendMessage({
+
+                let ret = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.LOADED,
-                    status: Constant.STATUS_CODE.SUCCESS,
+                    status: Constant.STATUS_CODE.FAIL,
                     frameRate: Constant.FRAME_RATE,
                     totalFrame: Constant.TOTAL_FRAME,
-                });
+                };
+                try {
+                    await this.connectToAppium();
+                    ret.status = Constant.STATUS_CODE.SUCCESS
+                } catch (e) {
+                    console.error(e);
+                }
+                this.sendMessage(ret);
                 break;
             //切换场景
             case Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE:
                 let folder = Path.basename(msg.scene, Path.extname(msg.scene));
-                this.dest = Path.join(Constant.IMAGE_SAVE_PATH, this.platform + '', this.phone, folder);
+                this.dest = Path.join(this.host.targetPath, folder);
                 Fs.ensureDirSync(this.dest);
                 Fs.emptyDirSync(this.dest);
                 console.log(`change scene`, folder);
@@ -94,10 +105,12 @@ class Agent {
                 break;
             case Constant.RECEIVE_MESSAGE_ENUM.END:
                 cc.log('测试完毕');
-                this.sendMessage({
+                let result = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.END,
                     status: Constant.STATUS_CODE.SUCCESS,
-                });
+                };
+                this.sendMessage(result);
+                this.host.notifyFinish(result);
                 break;
             default:
                 console.log('未知的命令', msg.type);
@@ -109,6 +122,12 @@ class Agent {
         this.connection.send(JSON.stringify(msg));
     }
 
+    async connectToAppium() {
+        this.host = new Host();
+        this._registerEvent();
+        return await this.host.init();
+    }
+
     onError(event) {
     }
 
@@ -118,6 +137,19 @@ class Agent {
     destroy() {
 
     }
+
+    _registerEvent() {
+        this.host.on('error', (e) => {
+            this.connection.close();
+            console.error(e)
+        });
+
+        this.host.on('disconnect', (e) => {
+            this.connection.close();
+            console.error(`跟 ${this.host.url} 断开连接`);
+            this.emit('disconnect',this);
+        });
+    };
 }
 
 module.exports = Agent;

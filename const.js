@@ -1,8 +1,16 @@
 module.exports = {
     //保存的基础路径
-    IMAGE_SAVE_PATH: '/Users/wzm/company/auto-test/',
+    PORT: 9999,//本服务器的监听端口
+    HOST: '127.0.0.1',//appium 的服务器的ip
+    HOST_PORT: 8000,//appium 的服务器端口
     FRAME_RATE: 15,//客户端的帧率
-    TOTAL_FRAME: 150,
+    TOTAL_FRAME: 150,//截帧的数量
+
+    //给appium发消息的消息列表
+    HOST_ENUM: {
+        INIT: 'Init',
+    },
+
     //接收消息列表
     RECEIVE_MESSAGE_ENUM: {
         LOADED: 'loaded',//程序加载完成，这时候会带参数信息过来
