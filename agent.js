@@ -104,7 +104,7 @@ class Agent extends EventEmitter {
                 });
                 break;
             case Constant.RECEIVE_MESSAGE_ENUM.END:
-                cc.log('测试完毕');
+                console.log('测试完毕');
                 let result = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.END,
                     status: Constant.STATUS_CODE.SUCCESS,
@@ -137,17 +137,20 @@ class Agent extends EventEmitter {
     destroy() {
 
     }
+    disconnect(){
+        this.connection.close();
+        this.host.disconnect();
+        this.emit('disconnect',this);
+    }
 
     _registerEvent() {
         this.host.on('error', (e) => {
-            this.connection.close();
-            console.error(e)
+            this.disconnect();
         });
 
         this.host.on('disconnect', (e) => {
-            this.connection.close();
+            this.disconnect();
             console.error(`跟 ${this.host.url} 断开连接`);
-            this.emit('disconnect',this);
         });
     };
 }
