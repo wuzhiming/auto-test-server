@@ -21,6 +21,7 @@ class Agent extends EventEmitter {
         this.idx = 0;
         this.phone = '';//先不用，后续要加上去区分不同手机
         this.imageTask = new ImageTask();
+        this.idx = 0;
         this.init();
     }
 
@@ -99,8 +100,10 @@ class Agent extends EventEmitter {
                 this.idx = 0;
                 let resultMsg = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,
+                    state: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
-                    scene: msg.scene
+                    scene: msg.scene,
+                    id: this.idx++,
                 };
                 this.sendMessage(resultMsg);
 
@@ -110,7 +113,9 @@ class Agent extends EventEmitter {
                 console.log('测试完毕');
                 let result = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.END,
+                    state: Constant.RECEIVE_MESSAGE_ENUM.END,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
+                    id: this.idx++,
                 };
                 this.sendMessage(result);
                 this.host.sendMessage(result);

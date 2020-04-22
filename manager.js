@@ -14,6 +14,7 @@ class AgentManager {
         this.idx = 0;
         this.agents = {};
         this.server = new WebSocket.Server({port: Constant.PORT});
+        console.log('服务器启动完成，端口：', Constant.PORT);
         this.server.on('connection', (ws) => {
             this.add(ws);
         });

@@ -16,6 +16,7 @@ module.exports = {
         LOADED: 'loaded',//程序加载完成，这时候会带参数信息过来
         CHANGE_SCENE: 'change-scene',//切换场景,这时候会带新场景的信息过来
         END: 'end',//测试结束
+        SCENE_CHANGED: 'SceneChanged',//兼容王浩之前python服务器的代码
     },
     //发送消息列表
     SEND_MESSAGE_ENUM: {
