@@ -71,7 +71,7 @@ class Host extends EventEmitter {
         });
     }
 
-    notifyFinish(msg) {
+    sendMessage(msg){
         this.socket.send(JSON.stringify(msg));
     }
 

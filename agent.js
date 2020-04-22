@@ -97,11 +97,14 @@ class Agent extends EventEmitter {
                 Fs.emptyDirSync(this.dest);
                 console.log(`change scene`, folder);
                 this.idx = 0;
-                this.sendMessage({
+                let resultMsg = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,
                     status: Constant.STATUS_CODE.SUCCESS,
                     scene: msg.scene
-                });
+                };
+                this.sendMessage(resultMsg);
+
+                this.host.sendMessage(resultMsg);
                 break;
             case Constant.RECEIVE_MESSAGE_ENUM.END:
                 console.log('测试完毕');
@@ -110,7 +113,7 @@ class Agent extends EventEmitter {
                     status: Constant.STATUS_CODE.SUCCESS,
                 };
                 this.sendMessage(result);
-                this.host.notifyFinish(result);
+                this.host.sendMessage(result);
                 break;
             default:
                 console.log('未知的命令', msg.type);
