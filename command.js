@@ -22,6 +22,11 @@ const requestListener = async function (req, res) {
     }
 };
 
+/**
+ * 好吧，我承认这个方法很危险，可以执行任何命令，不过内部在用的就先随意了
+ * @param command
+ * @returns {Promise<unknown>}
+ */
 async function execCommand(command) {
     if (!command) return Promise.reject();
 
