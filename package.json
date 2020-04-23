@@ -2,7 +2,7 @@
   "name": "auto-test-server",
   "version": "1.0.0",
   "dependencies": {
-    "fs-extra": "^9.0.0",
+    "fs-extra": "8.0.0",
     "jimp": "^0.9.6",
     "seedrandom": "^3.0.5",
     "ws": "^7.2.3"

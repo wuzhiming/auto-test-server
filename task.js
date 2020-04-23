@@ -1,7 +1,7 @@
 const Image = require('./image');
 
+const MAX_PROGRESS = 5;//同时进行多少的图片转换
 class ImageTask {
-    static MAX_PROGRESS = 5;//同时进行多少的图片转换
     constructor() {
         this.currentTaskCount = 0;
         this.images = [];
@@ -18,9 +18,9 @@ class ImageTask {
     }
 
     run() {
-        if (this.currentTaskCount >= ImageTask.MAX_PROGRESS) return;
+        if (this.currentTaskCount >= MAX_PROGRESS) return;
         let array = [];
-        let delta = ImageTask.MAX_PROGRESS - this.currentTaskCount;
+        let delta = MAX_PROGRESS - this.currentTaskCount;
         delta = delta > this.images.length ? this.images.length : delta;
         for (let i = 0; i < delta; i++) {
             let image = this.images.shift();
