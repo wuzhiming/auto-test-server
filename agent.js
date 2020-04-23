@@ -113,12 +113,16 @@ class Agent extends EventEmitter {
                 console.log('测试完毕');
                 let result = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.END,
-                    state: Constant.RECEIVE_MESSAGE_ENUM.END,//发给Python服务器的状态
+                    state: Constant.RECEIVE_MESSAGE_ENUM.HOST_END,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
                     id: this.idx++,
                 };
                 this.sendMessage(result);
                 this.host.sendMessage(result);
+
+                setTimeout(() => {
+                    this.disconnect();
+                }, 1000);
                 break;
             default:
                 console.log('未知的命令', msg.type);
@@ -145,10 +149,11 @@ class Agent extends EventEmitter {
     destroy() {
 
     }
-    disconnect(){
+
+    disconnect() {
         this.connection.close();
         this.host.disconnect();
-        this.emit('disconnect',this);
+        this.emit('disconnect', this);
     }
 
     _registerEvent() {

@@ -17,6 +17,7 @@ module.exports = {
         CHANGE_SCENE: 'change-scene',//切换场景,这时候会带新场景的信息过来
         END: 'end',//测试结束
         SCENE_CHANGED: 'SceneChanged',//兼容王浩之前python服务器的代码
+        HOST_END:'End',//python服务器兼容end的代码
     },
     //发送消息列表
     SEND_MESSAGE_ENUM: {
