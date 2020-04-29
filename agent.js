@@ -21,7 +21,8 @@ class Agent extends EventEmitter {
         this.idx = 0;
         this.phone = '';//先不用，后续要加上去区分不同手机
         this.imageTask = new ImageTask();
-        this.idx = 0;
+        this.serverIdx = 0;
+        this.isNative = false;
         this.init();
     }
 
@@ -59,7 +60,7 @@ class Agent extends EventEmitter {
      * @returns {Promise<void>}
      */
     async saveImage(message) {
-        this.imageTask.push(new Image(this.width, this.height, message, Path.join(this.dest, `${++this.idx}.png`)));
+        this.imageTask.push(new Image(this.width, this.height, message, Path.join(this.dest, `${++this.idx}.png`), this.isNative));
         this.sendMessage({
             type: Constant.SEND_MESSAGE_ENUM.IMAGE_SAVED,
             status: Constant.STATUS_CODE.SUCCESS
@@ -75,6 +76,7 @@ class Agent extends EventEmitter {
                 this.height = parseInt(msg.height);
                 this.platform = msg.platform;
                 this.phone = msg.phone || '';
+                this.isNative = msg.isNative || false;
 
                 let ret = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.LOADED,
@@ -103,7 +105,7 @@ class Agent extends EventEmitter {
                     state: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
                     scene: msg.scene,
-                    id: this.idx++,
+                    id: this.serverIdx++,
                 };
                 this.sendMessage(resultMsg);
 
@@ -115,7 +117,7 @@ class Agent extends EventEmitter {
                     type: Constant.RECEIVE_MESSAGE_ENUM.END,
                     state: Constant.RECEIVE_MESSAGE_ENUM.HOST_END,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
-                    id: this.idx++,
+                    id: this.serverIdx++,
                 };
                 this.sendMessage(result);
                 this.host.sendMessage(result);
@@ -144,6 +146,7 @@ class Agent extends EventEmitter {
     }
 
     onClosed(event) {
+        this.disconnect();
     }
 
     destroy() {

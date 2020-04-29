@@ -27,14 +27,17 @@ class ImageTask {
             array.push(image.save());
             this.currentTaskCount++;
         }
-        Promise.all(array).catch((err)=>{
-            console.error(err);
-        }).finally(() => {
+        (async () => {
+            try {
+                await Promise.all(array);
+            } catch (e) {
+                console.error(e);
+            }
             this.currentTaskCount -= array.length;
             if (this.last) {
                 this.run();
             }
-        });
+        })();
     }
 
     get last() {
