@@ -102,7 +102,7 @@ class Agent extends EventEmitter {
                 this.idx = 0;
                 let resultMsg = {
                     type: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,
-                    state: Constant.RECEIVE_MESSAGE_ENUM.CHANGE_SCENE,//发给Python服务器的状态
+                    state: Constant.RECEIVE_MESSAGE_ENUM.SCENE_CHANGED,//发给Python服务器的状态
                     status: Constant.STATUS_CODE.SUCCESS,
                     scene: msg.scene,
                     id: this.serverIdx++,
